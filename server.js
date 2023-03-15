@@ -7,6 +7,8 @@ const express = require('express')
 const app = express()
 
 //Middleware
+
+app.use(express.static('public'))
 // MIDDLEWARE
 app.set('views', __dirname + '/views')
 app.set('view engine', 'jsx')
@@ -24,5 +26,10 @@ app.use('/breads', breadsController)
 
 app.listen(PORT, () => {
     console.log('Listening on PORT:', PORT)
+})
+
+//404 last
+app.get('*', (req, res)  => {
+    res.send('Page not found... Sad Panda')
 })
 console.log(PORT)
