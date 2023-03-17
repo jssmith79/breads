@@ -2,11 +2,49 @@ const express = require('express')
 const breads_router = express.Router()
 const Bread = require('../models/bread.js')
 
+
+//NEW
+breads_router.get('/new', (req, res) => {
+  res.render('new')
+})
+
+
+
+
+// edit
+breads_router.get('/:arrayIndex/edit', (req, res) => {
+  res.render('edit', {
+    bread: Bread[req.params.arrayIndex],
+    index: req.params.arrayIndex,
+  })
+})
+
+
+// UPDATE
+breads_router.put('/:arrayIndex', (req, res) => {
+  if(req.body.hasGluten === 'on'){
+    req.body.hasGluten = true
+  } else {
+    req.body.hasGluten = false
+  }
+  Bread[req.params.arrayIndex] = req.body
+  res.redirect(`/breads/${req.params.arrayIndex}`)
+})
+
+// DELETE
+breads_router.delete('/:arrayIndex', (req, res) => {
+  Bread.splice(req.params.arrayIndex, 1)
+  res.status(303).redirect('/breads')
+})
+
+//SHOW
+
 breads_router.get('/:arrayIndex', (req, res) => {
     //res.send(Bread[req.params.arrayIndex])
     if (Bread[req.params.arrayIndex]) {
     res.render('Show', {
-        bread: Bread[req.params.arrayIndex]
+        bread: Bread[req.params.arrayIndex],
+        index: req.params.arrayIndex,
     })
    } else {
     res.send('404 -- No Bueno')
@@ -19,20 +57,6 @@ breads_router.get('/', (req, res) => {
         breads: Bread,
         title: 'Index'
     })
-})
-
-breads_router.post('/', (req, res) => {
-    if (req.body.hasGluten === 'on') {
-        req.body.hasGluten = 'true'
-    }else {
-        req.body.hasGluten = 'false'
-    }
-    Bread.push(req.body)
-    res.redirect('/breads')    
-})
-
-breads_router.get('/new', (req, res) => {
-    res.render('new')
 })
 
 // CREATE
@@ -49,4 +73,8 @@ breads_router.post('/', (req, res) => {
     res.redirect('/breads')
   })
   
+
+
+
+
 module.exports = breads_router

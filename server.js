@@ -6,10 +6,14 @@ const PORT = process.env.PORT
 const express = require('express')
 const app = express()
 
+//dependencies
+const methodOverride = require('method-override')
 //Middleware
 
 app.use(express.static('public'))
 app.use(express.urlencoded({extended: true}))
+app.use(methodOverride('?_method'))
+
 // MIDDLEWARE
 app.set('views', __dirname + '/views')
 app.set('view engine', 'jsx')
