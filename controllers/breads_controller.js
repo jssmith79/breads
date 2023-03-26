@@ -2,6 +2,7 @@ const express = require('express')
 const breads_router = express.Router()
 const Bread = require('../models/bread.js')
 const baker_schema = require('../models/baker')
+const bread_seed = require('../models/baker_seed')
 
 
 //NEW
@@ -12,20 +13,27 @@ breads_router.get('/new', (req, res) => {
     })
 })
 
+//seed
+breads_router.get('/data/seed', (req, res) => {
 
+})
 
 
 // edit
-breads_router.get('/:id/edit', (req, res) => {
-  Bread.findById(req.params.id)
-    .then(foundBread => {
-      res.render('edit', {
-        bread: foundBread
-      })
-    })
+breads_router.get('/id/edit', (req, res) => {
+  baker_schema.find()
+        .then((foundBakers) => {
+            bread_schema.findById(req.params.id)
+                .then((foundBread) => { 
+                    res.render('edit', { 
+                        bread: foundBread,
+                        bakers: foundBakers,
+                    }) 
+                })
+                .catch((err) => { console.log(err) })
+        })
+        
   })
-
-
 // UPDATE
 breads_router.put('/:id', (req, res) => {
   if(req.body.hasGluten === 'on'){
@@ -53,6 +61,7 @@ breads_router.delete('/:id', (req, res) => {
 breads_router.get('/:id', (req, res) => {
     //res.send(Bread[req.params.arrayIndex])
     Bread.findById(req.params.id)
+      .populate('baker')
       .then(foundBread => {
         const bakedBy = foundBread.getBakedBy()
         console.log(bakedBy)
@@ -60,16 +69,21 @@ breads_router.get('/:id', (req, res) => {
           bread:foundBread
         })
       })
+      .catch((err) => { console.log(err) })
    })
 
 //Index
 breads_router.get('/', (req, res) => {
+  baker_schema.find()
+    .then((foundBakers) => {  
     Bread.find()
       .then(foundBreads => {
         res.render('index', {
             breads: foundBreads,
+            bakers: foundBakers,
             title: 'Index Page'
         })
+      })
     })
 })
 
